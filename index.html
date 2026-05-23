@@ -1,935 +1,582 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>হকার মেলা BD</title>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>হকার মেলা BD</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <!-- Swiper for Image Slider -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-:root {
-  --green: #1a7a4a;
-  --green-dark: #0f5233;
-  --green-light: #25a362;
-  --red: #c0392b;
-  --gold: #f39c12;
-  --gold-light: #f7c948;
-  --bg: #f0ede8;
-  --white: #ffffff;
-  --text: #1a1a1a;
-  --muted: #777;
-  --shadow: 0 2px 12px rgba(0,0,0,0.10);
-  --radius: 12px;
-}
+        body {
+            background: #f5f5f5;
+            padding-bottom: 70px;
+        }
 
-html, body {
-  font-family: 'Hind Siliguri', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  max-width: 480px;
-  margin: 0 auto;
-  overflow-x: hidden;
-}
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
 
-/* ── HEADER ── */
-.header {
-  background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 60%, var(--green-light) 100%);
-  padding: 12px 16px 10px;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: justify;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 3px 14px rgba(0,0,0,0.25);
-}
-.header-logo { display:flex; align-items:center; gap:10px; }
-.logo-icon {
-  width:44px; height:44px; background:var(--gold);
-  border-radius:50%; display:flex; align-items:center;
-  justify-content:center; font-size:22px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3);
-  animation: pulse 2.5s infinite;
-}
-@keyframes pulse {
-  0%,100%{ box-shadow:0 2px 8px rgba(0,0,0,0.3); }
-  50%{ box-shadow:0 2px 18px rgba(243,156,18,0.7); }
-}
-.logo-text h1 { font-size:18px; font-weight:800; color:#fff; line-height:1.1; }
-.logo-text span { font-size:11px; color:var(--gold-light); font-weight:500; }
-.header-icons { display:flex; gap:10px; align-items:center; }
-.hbtn {
-  background:rgba(255,255,255,0.18); border:none; border-radius:50%;
-  width:36px; height:36px; display:flex; align-items:center;
-  justify-content:center; cursor:pointer; font-size:17px; color:#fff;
-}
-.hbtn:active { background:rgba(255,255,255,0.35); }
+        /* Swiper Slider */
+        .swiper {
+            width: 100%;
+            height: 200px;
+            margin: 10px 0;
+        }
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
 
-/* ── TICKER ── */
-.ticker-bar {
-  background:linear-gradient(90deg,#b71c1c,#e53935);
-  color:#fff; padding:7px 14px;
-  display:flex; align-items:center; gap:10px; overflow:hidden;
-}
-.ticker-label {
-  font-size:11px; font-weight:800;
-  background:#fff; color:#b71c1c;
-  padding:2px 8px; border-radius:10px; white-space:nowrap; flex-shrink:0;
-}
-.ticker-wrap { overflow:hidden; flex:1; }
-.ticker-inner {
-  white-space:nowrap; font-size:12px; font-weight:600;
-  animation: ticker 22s linear infinite;
-}
-@keyframes ticker { from{transform:translateX(100%)} to{transform:translateX(-100%)} }
+        /* Video Section */
+        .section-card {
+            background: white;
+            margin: 15px;
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 12px;
+            border-left: 5px solid #e67e22;
+            padding-left: 12px;
+        }
+        .video-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .video-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+        }
+        .video-input-group button {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .video-frame {
+            width: 100%;
+            min-height: 220px;
+            background: #000;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        iframe, .image-preview {
+            width: 100%;
+            height: 220px;
+            border-radius: 12px;
+            border: none;
+        }
+        .image-preview {
+            object-fit: cover;
+        }
 
-/* ── SLIDER ── */
-.slider-section { position:relative; overflow:hidden; height:195px; background:#111; }
-.slider-track { display:flex; height:100%; transition:transform 0.45s ease; will-change:transform; }
-.slide { min-width:100%; height:100%; position:relative; display:flex; align-items:center; justify-content:center; }
-.slide-1 { background:linear-gradient(135deg,#0f5233,#25a362); }
-.slide-2 { background:linear-gradient(135deg,#6d3400,#c0620f); }
-.slide-3 { background:linear-gradient(135deg,#0d2060,#1a3ea8); }
-.slide-4 { background:linear-gradient(135deg,#7b0000,#c62828); }
-.slide-emoji { font-size:64px; }
-.slide-caption {
-  position:absolute; bottom:0; left:0; right:0;
-  background:linear-gradient(transparent,rgba(0,0,0,0.78));
-  padding:28px 14px 12px; color:#fff;
-}
-.slide-caption h3 { font-size:14px; font-weight:700; }
-.slide-caption p { font-size:11px; opacity:.85; margin-top:3px; }
-.s-dots { position:absolute; bottom:9px; right:12px; display:flex; gap:5px; z-index:5; }
-.s-dot {
-  width:7px; height:7px; border-radius:50%;
-  background:rgba(255,255,255,0.45); cursor:pointer; transition:all .3s;
-}
-.s-dot.active { background:var(--gold); width:20px; border-radius:4px; }
-.s-btn {
-  position:absolute; top:50%; transform:translateY(-50%);
-  background:rgba(255,255,255,0.18); border:none; color:#fff;
-  width:30px; height:30px; border-radius:50%; cursor:pointer;
-  font-size:16px; z-index:5; backdrop-filter:blur(4px);
-  display:flex; align-items:center; justify-content:center;
-}
-.s-prev { left:8px; } .s-next { right:8px; }
+        /* Buttons Row */
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px;
+        }
+        .filter-btn {
+            background: #f39c12;
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            flex: 1 0 auto;
+            text-align: center;
+        }
+        .filter-btn.active {
+            background: #e67e22;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
 
-/* ── SEARCH ── */
-.search-bar {
-  margin:14px 14px 10px;
-  display:flex; background:#fff; border-radius:12px;
-  padding:10px 14px; gap:9px; align-items:center;
-  box-shadow:var(--shadow); border:2px solid transparent; transition:border-color .2s;
-}
-.search-bar:focus-within { border-color:var(--green); }
-.search-bar input { flex:1; border:none; outline:none; font-family:inherit; font-size:14px; background:transparent; }
-.search-bar .s-icon { font-size:18px; }
+        /* District/Thana Grid */
+        .grid-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .grid-btn {
+            background: #2c3e50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-/* ── SECTION TITLE ── */
-.sec-title {
-  padding:6px 14px 10px;
-  display:flex; justify-content:space-between; align-items:center;
-}
-.sec-title h2 {
-  font-size:15px; font-weight:700; color:var(--green-dark);
-  padding-left:10px; position:relative;
-}
-.sec-title h2::before {
-  content:''; position:absolute; left:0; top:50%;
-  transform:translateY(-50%); width:4px; height:17px;
-  background:var(--gold); border-radius:2px;
-}
-.see-all { font-size:12px; color:var(--green); font-weight:700; background:none; border:none; font-family:inherit; cursor:pointer; }
+        /* Mela List */
+        .mela-list {
+            margin: 15px;
+        }
+        .mela-item {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+        .mela-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d35400;
+        }
+        .mela-details {
+            font-size: 14px;
+            color: #555;
+            margin-top: 6px;
+        }
+        .badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
 
-/* ── QUICK ACTIONS GRID — FIXED ── */
-.quick-grid {
-  padding:0 14px 14px;
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-.q-card {
-  background:#fff;
-  border-radius:var(--radius);
-  padding:14px 12px;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  cursor:pointer;
-  box-shadow:var(--shadow);
-  border:none;
-  font-family:inherit;
-  text-align:left;
-  width:100%;
-  transition:transform .15s, box-shadow .15s;
-}
-.q-card:active { transform:scale(0.97); }
-.q-icon {
-  width:44px; height:44px; border-radius:11px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:21px; flex-shrink:0;
-}
-.q-icon.g { background:linear-gradient(135deg,var(--green-dark),var(--green-light)); }
-.q-icon.o { background:linear-gradient(135deg,#e67e22,#f39c12); }
-.q-icon.r { background:linear-gradient(135deg,#b71c1c,#e53935); }
-.q-icon.b { background:linear-gradient(135deg,#1565c0,#1976d2); }
-.q-text h3 { font-size:13px; font-weight:700; line-height:1.3; color:var(--text); }
-.q-text p { font-size:11px; color:var(--muted); margin-top:1px; }
-
-/* ── MEDIA SECTION ── */
-.media-section { padding:0 14px 14px; }
-.add-media-btn {
-  display:flex; align-items:center; gap:10px;
-  background:#fff; border:2px dashed var(--green);
-  border-radius:var(--radius); padding:13px 14px;
-  width:100%; cursor:pointer; font-family:inherit;
-  font-size:14px; color:var(--green); font-weight:700;
-  margin-bottom:12px; transition:background .2s;
-}
-.add-media-btn:active { background:#f0faf5; }
-
-/* ── MEDIA CARD (thumbnail style, no iframe) ── */
-.media-grid { display:flex; flex-direction:column; gap:11px; }
-.media-card {
-  background:#fff; border-radius:var(--radius);
-  overflow:hidden; box-shadow:var(--shadow); cursor:pointer;
-}
-.media-card:active { opacity:.92; }
-.thumb {
-  position:relative; height:185px; background:#111;
-  display:flex; align-items:center; justify-content:center; overflow:hidden;
-}
-.thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-.thumb-placeholder {
-  width:100%; height:100%; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:8px;
-  color:rgba(255,255,255,0.7); font-size:13px;
-}
-.thumb-placeholder .big-icon { font-size:48px; }
-.play-btn {
-  position:absolute; top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  width:54px; height:54px; border-radius:50%;
-  background:rgba(255,255,255,0.92);
-  display:flex; align-items:center; justify-content:center;
-  font-size:22px; box-shadow:0 3px 16px rgba(0,0,0,0.4);
-  transition:transform .2s;
-}
-.media-card:hover .play-btn { transform:translate(-50%,-50%) scale(1.08); }
-.media-badge {
-  position:absolute; top:10px; left:10px;
-  color:#fff; font-size:10px; padding:3px 9px;
-  border-radius:10px; font-weight:800;
-}
-.badge-yt { background:#FF0000; }
-.badge-fb { background:#1877F2; }
-.badge-img { background:var(--green); }
-.badge-vid { background:#6a1b9a; }
-.media-info { padding:11px 13px; }
-.media-info h4 { font-size:13px; font-weight:700; line-height:1.4; margin-bottom:5px; }
-.media-meta { display:flex; flex-wrap:wrap; gap:10px; font-size:11px; color:var(--muted); }
-.ext-link-note {
-  font-size:11px; color:var(--green); font-weight:600;
-  margin-top:5px; display:block;
-}
-
-/* ── BOTTOM NAV ── */
-.bottom-nav {
-  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
-  width:100%; max-width:480px; background:#fff;
-  border-top:1px solid #eaeaea;
-  display:flex; padding:7px 0 5px; z-index:150;
-  box-shadow:0 -3px 16px rgba(0,0,0,0.08);
-}
-.nav-btn {
-  flex:1; display:flex; flex-direction:column;
-  align-items:center; gap:2px; border:none;
-  background:none; cursor:pointer; padding:3px 0; font-family:inherit;
-}
-.nav-btn .ni { font-size:21px; }
-.nav-btn .nl { font-size:10px; font-weight:600; color:#aaa; }
-.nav-btn.active .nl { color:var(--green); }
-.spacer { height:72px; }
-
-/* ── MODAL ── */
-.overlay {
-  display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,0.52); z-index:200;
-  align-items:flex-end; backdrop-filter:blur(3px);
-}
-.overlay.on { display:flex; }
-.sheet {
-  background:#fff; border-radius:22px 22px 0 0;
-  width:100%; max-height:88vh; overflow-y:auto;
-  animation:up .28s ease; padding-bottom:28px;
-}
-@keyframes up { from{transform:translateY(100%)} to{transform:translateY(0)} }
-.sheet-handle { width:38px; height:4px; background:#ddd; border-radius:2px; margin:13px auto 0; }
-.sheet-head {
-  padding:14px 18px 11px; display:flex;
-  justify-content:space-between; align-items:center;
-  border-bottom:1px solid #f2f2f2;
-  position:sticky; top:0; background:#fff; z-index:2;
-}
-.sheet-head h3 { font-size:16px; font-weight:700; color:var(--green-dark); }
-.close-btn {
-  background:#f2f2f2; border:none; border-radius:50%;
-  width:30px; height:30px; font-size:17px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-}
-.sheet-body { padding:14px 18px; }
-
-/* ── MELA SEARCH ── */
-.filter-list { display:flex; flex-direction:column; gap:9px; }
-.filter-btn {
-  display:flex; align-items:center; gap:13px;
-  padding:14px; background:#f7f7f7;
-  border-radius:11px; border:none; cursor:pointer;
-  font-family:inherit; width:100%; text-align:left; transition:background .2s;
-}
-.filter-btn:active { background:#edfaf3; }
-.fi {
-  width:43px; height:43px; border-radius:11px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:21px; flex-shrink:0;
-}
-.fi.run{background:linear-gradient(135deg,#2e7d32,#43a047);}
-.fi.thr{background:linear-gradient(135deg,#e65100,#ef6c00);}
-.fi.sev{background:linear-gradient(135deg,#1565c0,#1976d2);}
-.fi.ten{background:linear-gradient(135deg,#6a1b9a,#8e24aa);}
-.fi.all{background:linear-gradient(135deg,#37474f,#546e7a);}
-.ft h4{font-size:14px;font-weight:700;}
-.ft p{font-size:11px;color:var(--muted);margin-top:2px;}
-.arrow{margin-left:auto;color:#bbb;font-size:18px;}
-
-/* ── MELA RESULTS ── */
-.results-list{display:flex;flex-direction:column;gap:11px;}
-.r-card{
-  background:#fff;border-radius:11px;padding:13px;
-  border-left:4px solid var(--green);
-  box-shadow:0 2px 9px rgba(0,0,0,0.08);
-}
-.r-card h4{font-size:14px;font-weight:700;margin-bottom:5px;}
-.r-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--muted);}
-.r-badge{
-  display:inline-block;padding:2px 9px;border-radius:10px;
-  font-size:11px;font-weight:700;margin-bottom:5px;
-}
-.run-b{background:#e8f5e9;color:#2e7d32;}
-.up-b{background:#fff3e0;color:#e65100;}
-
-/* ── LOCATION ── */
-.div-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
-.div-btn{
-  background:linear-gradient(135deg,var(--green-dark),var(--green));
-  border:none;border-radius:11px;padding:13px 7px;color:#fff;
-  cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;
-  text-align:center;transition:transform .15s;
-  display:flex;flex-direction:column;align-items:center;gap:5px;
-}
-.div-btn:active{transform:scale(0.96);}
-.div-btn .di{font-size:21px;}
-.dist-grid,.thana-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
-.dist-btn,.thana-btn{
-  background:#fff;border:2px solid #e0e0e0;border-radius:10px;
-  padding:11px 9px;cursor:pointer;font-family:inherit;
-  font-size:13px;font-weight:600;color:var(--text);
-  text-align:center;transition:all .2s;
-}
-.dist-btn:active,.thana-btn:active{border-color:var(--green);color:var(--green);background:#f0faf5;}
-.breadcrumb{display:flex;align-items:center;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
-.bc-item{font-size:12px;color:var(--green);cursor:pointer;font-weight:700;}
-.bc-sep{font-size:12px;color:#bbb;}
-.bc-cur{font-size:12px;color:var(--muted);}
-
-/* ── ADD MEDIA FORM ── */
-.type-tabs{display:flex;gap:8px;margin-bottom:13px;}
-.t-tab{
-  flex:1;padding:10px;border:2px solid #e0e0e0;
-  border-radius:10px;background:#fff;cursor:pointer;
-  font-family:inherit;font-size:13px;font-weight:700;
-  text-align:center;transition:all .2s;
-}
-.t-tab.on{border-color:var(--green);background:#f0faf5;color:var(--green);}
-.fg{margin-bottom:12px;}
-.fg label{display:block;font-size:12px;font-weight:700;margin-bottom:5px;color:var(--green-dark);}
-.fg input,.fg select,.fg textarea{
-  width:100%;padding:11px 13px;border:2px solid #e0e0e0;
-  border-radius:10px;font-family:inherit;font-size:14px;
-  outline:none;transition:border-color .2s;
-}
-.fg input:focus,.fg select:focus{border-color:var(--green);}
-.sub-btn{
-  width:100%;padding:13px;
-  background:linear-gradient(135deg,var(--green-dark),var(--green-light));
-  color:#fff;border:none;border-radius:11px;
-  font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;
-}
-.sub-btn:active{opacity:.88;}
-
-/* ── VIDEO PLAYER MODAL ── */
-.player-wrap{background:#000;border-radius:11px;overflow:hidden;margin-bottom:12px;}
-.player-wrap iframe{width:100%;height:215px;border:none;display:block;}
-.player-wrap img{width:100%;height:215px;object-fit:cover;display:block;}
-.player-note{font-size:11px;color:var(--muted);text-align:center;margin-top:7px;}
-.open-source-btn{
-  display:block;width:100%;padding:12px;margin-top:10px;
-  background:var(--green);color:#fff;border:none;border-radius:10px;
-  font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;
-  text-decoration:none;text-align:center;
-}
-</style>
+        /* Admin Panel Toggle */
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #d35400;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 200;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .admin-panel {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 90%;
+            max-width: 350px;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 200;
+        }
+        .admin-panel input, .admin-panel select, .admin-panel textarea {
+            width: 100%;
+            margin: 6px 0;
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+        }
+        .admin-panel button {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 30px;
+            width: 100%;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
-  <div class="header-logo">
-    <div class="logo-icon">🎪</div>
-    <div class="logo-text">
-      <h1>হকার মেলা BD</h1>
-      <span>বাংলাদেশের সেরা মেলা প্ল্যাটফর্ম</span>
-    </div>
-  </div>
-  <div class="header-icons">
-    <button class="hbtn" onclick="openModal('notifModal')">🔔</button>
-    <button class="hbtn" onclick="openModal('addMediaModal')">➕</button>
-  </div>
+    🎪 হকার মেলা BD
 </div>
 
-<!-- TICKER -->
-<div class="ticker-bar">
-  <span class="ticker-label">🔴 চলমান</span>
-  <div class="ticker-wrap">
-    <div class="ticker-inner">🎪 ঢাকা বাণিজ্য মেলা চলছে &nbsp;•&nbsp; 🎡 চট্টগ্রাম শিল্প মেলা &nbsp;•&nbsp; 🎠 রাজশাহী বই মেলা &nbsp;•&nbsp; 🎪 সিলেট কৃষি মেলা চলছে &nbsp;•&nbsp;</div>
-  </div>
+<!-- Image Slider -->
+<div class="swiper mySwiper">
+    <div class="swiper-wrapper" id="sliderWrapper">
+        <div class="swiper-slide"><img src="https://picsum.photos/800/300?random=1" alt="মেলা"></div>
+        <div class="swiper-slide"><img src="https://picsum.photos/800/300?random=2" alt="মেলা"></div>
+        <div class="swiper-slide"><img src="https://picsum.photos/800/300?random=3" alt="মেলা"></div>
+    </div>
+    <div class="swiper-pagination"></div>
 </div>
 
-<!-- SLIDER -->
-<div class="slider-section">
-  <div class="slider-track" id="sliderTrack">
-    <div class="slide slide-1">
-      <span class="slide-emoji">🎪</span>
-      <div class="slide-caption">
-        <h3>ঢাকা আন্তর্জাতিক বাণিজ্য মেলা ২০২৬</h3>
-        <p>📍 শেরে বাংলা নগর, ঢাকা &nbsp;•&nbsp; চলছে এখন</p>
-      </div>
+<!-- Video / Media Section -->
+<div class="section-card">
+    <div class="section-title">🎬 ভিডিও / ইমজি গ্যালারি</div>
+    <div class="video-input-group">
+        <input type="text" id="mediaUrlInput" placeholder="YouTube/FB লিংক অথবা ছবির URL">
+        <button id="loadMediaBtn">দেখুন</button>
     </div>
-    <div class="slide slide-2">
-      <span class="slide-emoji">🏺</span>
-      <div class="slide-caption">
-        <h3>চট্টগ্রাম হস্তশিল্প ও কুটির শিল্প মেলা</h3>
-        <p>📍 চট্টগ্রাম &nbsp;•&nbsp; ৩ দিন বাকি</p>
-      </div>
+    <div id="mediaContainer" class="video-frame">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="ডেমো ভিডিও"></iframe>
     </div>
-    <div class="slide slide-3">
-      <span class="slide-emoji">📚</span>
-      <div class="slide-caption">
-        <h3>রাজশাহী জাতীয় বই মেলা ২০২৬</h3>
-        <p>📍 রাজশাহী &nbsp;•&nbsp; ৭ দিন বাকি</p>
-      </div>
-    </div>
-    <div class="slide slide-4">
-      <span class="slide-emoji">🌾</span>
-      <div class="slide-caption">
-        <h3>সিলেট কৃষি ও প্রযুক্তি মেলা</h3>
-        <p>📍 সিলেট &nbsp;•&nbsp; চলছে এখন</p>
-      </div>
-    </div>
-  </div>
-  <button class="s-btn s-prev" onclick="changeSlide(-1)">‹</button>
-  <button class="s-btn s-next" onclick="changeSlide(1)">›</button>
-  <div class="s-dots" id="sliderDots"></div>
+    <p style="font-size:12px; color:#777; margin-top:8px;">ⓘ ইউটিউব লিংক দিলে শুধু ভিডিও দেখাবে, বাইরে যাবে না। ছবির URL দিলে ছবি দেখাবে।</p>
 </div>
 
-<!-- SEARCH -->
-<div class="search-bar">
-  <span class="s-icon">🔍</span>
-  <input type="text" placeholder="মেলা খুঁজুন...">
+<!-- মেলা খুজুন বাটন রো -->
+<div class="button-row" id="filterButtons">
+    <button data-filter="running" class="filter-btn active">🏃 রানিং মেলা</button>
+    <button data-filter="3days" class="filter-btn">⏳ তিন দিন বাকি</button>
+    <button data-filter="7days" class="filter-btn">📅 সাত দিন বাকি</button>
+    <button data-filter="10days" class="filter-btn">📆 দশ দিন বাকি</button>
+    <button data-filter="all" class="filter-btn">🗺️ সমস্ত মেলা</button>
 </div>
 
-<!-- QUICK ACTIONS -->
-<div class="sec-title" style="padding-top:2px">
-  <h2>দ্রুত আ্যাকশন</h2>
-</div>
-<div class="quick-grid">
-  <button class="q-card" onclick="openModal('melaSearchModal')">
-    <div class="q-icon g">🎪</div>
-    <div class="q-text"><h3>মেলা খুঁজুন</h3><p>সময় অনুযায়ী</p></div>
-  </button>
-  <button class="q-card" onclick="openModal('districtModal')">
-    <div class="q-icon o">🗺️</div>
-    <div class="q-text"><h3>জেলা ও থানা</h3><p>এলাকা অনুযায়ী</p></div>
-  </button>
-  <button class="q-card" onclick="openModal('addMediaModal')">
-    <div class="q-icon r">📹</div>
-    <div class="q-text"><h3>ভিডিও/ছবি যোগ</h3><p>মেলার মিডিয়া</p></div>
-  </button>
-  <button class="q-card">
-    <div class="q-icon b">📋</div>
-    <div class="q-text"><h3>মেলা যোগ করুন</h3><p>নতুন মেলা</p></div>
-  </button>
+<!-- জেলা ও থানা অনুযায়ী মেলা খুজুন -->
+<div class="section-card">
+    <div class="section-title">📍 জেলা ও থানা অনুযায়ী খুঁজুন</div>
+    <div id="divisionContainer" class="grid-buttons">
+        <!-- divisions dynamically -->
+    </div>
+    <div id="districtContainer" class="grid-buttons"></div>
+    <div id="thanaContainer" class="grid-buttons"></div>
 </div>
 
-<!-- MEDIA SECTION -->
-<div class="sec-title">
-  <h2>মেলার ভিডিও ও ছবি</h2>
-  <button class="see-all">সব দেখুন</button>
-</div>
-<div class="media-section">
-  <button class="add-media-btn" onclick="openModal('addMediaModal')">
-    ➕&nbsp; ভিডিও লিংক বা ছবি যোগ করুন
-  </button>
-  <div class="media-grid" id="mediaGrid">
-
-    <!-- Sample card 1: YouTube (thumbnail, opens YouTube) -->
-    <div class="media-card" onclick="playMedia('yt','dQw4w9WgXcQ','ঢাকা বাণিজ্য মেলা ২০২৬','https://www.youtube.com/watch?v=dQw4w9WgXcQ')">
-      <div class="thumb">
-        <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="ঢাকা বাণিজ্য মেলা" onerror="this.parentNode.innerHTML='<div class=thumb-placeholder><span class=big-icon>🎬</span><span>ভিডিও</span></div>'">
-        <div class="play-btn">▶</div>
-        <div class="media-badge badge-yt">YouTube</div>
-      </div>
-      <div class="media-info">
-        <h4>ঢাকা বাণিজ্য মেলা ২০২৬ — সরাসরি সম্প্রচার</h4>
-        <div class="media-meta">
-          <span>📍 ঢাকা</span>
-          <span>👁 ১২.৫ হাজার</span>
-          <span>🕐 ২ ঘন্টা আগে</span>
-        </div>
-        <span class="ext-link-note">▶ ক্লিক করে ভিডিও দেখুন</span>
-      </div>
-    </div>
-
-    <!-- Sample card 2: Image -->
-    <div class="media-card" onclick="playMedia('img','','চট্টগ্রাম হস্তশিল্প মেলার দৃশ্য','https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=80')">
-      <div class="thumb">
-        <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=80" alt="মেলার ছবি" onerror="this.parentNode.innerHTML='<div class=thumb-placeholder><span class=big-icon>🖼️</span><span>ছবি</span></div>'">
-        <div class="media-badge badge-img">ছবি</div>
-      </div>
-      <div class="media-info">
-        <h4>চট্টগ্রাম হস্তশিল্প মেলার দৃশ্য</h4>
-        <div class="media-meta">
-          <span>📍 চট্টগ্রাম</span>
-          <span>👁 ৮.৩ হাজার</span>
-          <span>🕐 ৫ ঘন্টা আগে</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
+<!-- মেলা লিস্ট দেখাবে -->
+<div id="melaList" class="mela-list">
+    <p style="text-align:center;">মেলার তথ্য লোড হচ্ছে...</p>
 </div>
 
-<div class="spacer"></div>
+<!-- Admin Toggle Button -->
+<button class="admin-toggle" id="adminToggleBtn">🔐 অ্যাডমিন প্যানেল</button>
 
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <button class="nav-btn active">
-    <span class="ni">🏠</span><span class="nl">হোম</span>
-  </button>
-  <button class="nav-btn" onclick="openModal('melaSearchModal')">
-    <span class="ni">🎪</span><span class="nl">মেলা খুঁজুন</span>
-  </button>
-  <button class="nav-btn" onclick="openModal('districtModal')">
-    <span class="ni">🗺️</span><span class="nl">জেলা/থানা</span>
-  </button>
-  <button class="nav-btn" onclick="openModal('addMediaModal')">
-    <span class="ni">📹</span><span class="nl">মিডিয়া</span>
-  </button>
-  <button class="nav-btn">
-    <span class="ni">👤</span><span class="nl">প্রোফাইল</span>
-  </button>
-</div>
-
-<!-- ===== MODALS ===== -->
-
-<!-- Mela Search -->
-<div class="overlay" id="melaSearchModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3>🎪 মেলা খুঁজুন</h3>
-      <button class="close-btn" onclick="closeModal('melaSearchModal')">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div class="filter-list">
-        <button class="filter-btn" onclick="showResults('running')">
-          <div class="fi run">🟢</div>
-          <div class="ft"><h4>রানিং মেলা খুঁজুন</h4><p>এখন চলছে এমন সব মেলা</p></div>
-          <span class="arrow">›</span>
-        </button>
-        <button class="filter-btn" onclick="showResults('three')">
-          <div class="fi thr">🔶</div>
-          <div class="ft"><h4>তিন দিন বাকি মেলা খুঁজুন</h4><p>৩ দিনের মধ্যে শুরু হবে</p></div>
-          <span class="arrow">›</span>
-        </button>
-        <button class="filter-btn" onclick="showResults('seven')">
-          <div class="fi sev">🔷</div>
-          <div class="ft"><h4>সাত দিন বাকি মেলা খুঁজুন</h4><p>৭ দিনের মধ্যে শুরু হবে</p></div>
-          <span class="arrow">›</span>
-        </button>
-        <button class="filter-btn" onclick="showResults('ten')">
-          <div class="fi ten">🔮</div>
-          <div class="ft"><h4>দশ দিন বাকি মেলা খুঁজুন</h4><p>১০ দিনের মধ্যে শুরু হবে</p></div>
-          <span class="arrow">›</span>
-        </button>
-        <button class="filter-btn" onclick="showResults('all')">
-          <div class="fi all">🗂️</div>
-          <div class="ft"><h4>সমস্ত মেলা খুঁজুন</h4><p>বাংলাদেশের সকল মেলার তথ্য</p></div>
-          <span class="arrow">›</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Mela Results -->
-<div class="overlay" id="resultsModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3 id="resultsTitle">মেলার তালিকা</h3>
-      <button class="close-btn" onclick="closeModal('resultsModal')">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div class="results-list" id="resultsList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- District / Thana -->
-<div class="overlay" id="districtModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3>🗺️ জেলা ও থানা অনুযায়ী মেলা</h3>
-      <button class="close-btn" onclick="closeModal('districtModal')">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div class="breadcrumb" id="locBread"><span class="bc-cur">বিভাগ বেছে নিন</span></div>
-      <div class="div-grid" id="divGrid">
-        <button class="div-btn" onclick="selDiv('ঢাকা')"><span class="di">🏙️</span>ঢাকা</button>
-        <button class="div-btn" onclick="selDiv('চট্টগ্রাম')"><span class="di">⛵</span>চট্টগ্রাম</button>
-        <button class="div-btn" onclick="selDiv('রাজশাহী')"><span class="di">🍇</span>রাজশাহী</button>
-        <button class="div-btn" onclick="selDiv('খুলনা')"><span class="di">🌿</span>খুলনা</button>
-        <button class="div-btn" onclick="selDiv('বরিশাল')"><span class="di">🚢</span>বরিশাল</button>
-        <button class="div-btn" onclick="selDiv('সিলেট')"><span class="di">🍵</span>সিলেট</button>
-        <button class="div-btn" onclick="selDiv('রংপুর')"><span class="di">🌾</span>রংপুর</button>
-        <button class="div-btn" onclick="selDiv('ময়মনসিংহ')"><span class="di">🏔️</span>ময়মনসিংহ</button>
-      </div>
-      <div class="dist-grid" id="distGrid" style="display:none"></div>
-      <div class="thana-grid" id="thanaGrid" style="display:none"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Add Media -->
-<div class="overlay" id="addMediaModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3>📹 ভিডিও / ছবি যোগ করুন</h3>
-      <button class="close-btn" onclick="closeModal('addMediaModal')">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div class="type-tabs">
-        <button class="t-tab on" id="tabV" onclick="switchTab('v')">🎬 ভিডিও</button>
-        <button class="t-tab" id="tabI" onclick="switchTab('i')">🖼️ ছবি</button>
-      </div>
-      <div id="vForm">
-        <div class="fg">
-          <label>ভিডিও সোর্স</label>
-          <select id="vSource">
-            <option value="youtube">YouTube</option>
-            <option value="facebook">Facebook</option>
-            <option value="other">অন্য মাধ্যম</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label>ভিডিও লিংক পেস্ট করুন</label>
-          <input type="url" id="vUrl" placeholder="https://www.youtube.com/watch?v=...">
-        </div>
-      </div>
-      <div id="iForm" style="display:none">
-        <div class="fg">
-          <label>ছবির লিংক (URL)</label>
-          <input type="url" id="iUrl" placeholder="https://example.com/image.jpg">
-        </div>
-      </div>
-      <div class="fg">
-        <label>শিরোনাম</label>
-        <input type="text" id="mTitle" placeholder="মেলার নাম বা বিবরণ">
-      </div>
-      <div class="fg">
-        <label>অবস্থান</label>
-        <input type="text" id="mLoc" placeholder="জেলা / থানা / স্থান">
-      </div>
-      <button class="sub-btn" onclick="addMedia()">✅ যোগ করুন</button>
-    </div>
-  </div>
-</div>
-
-<!-- Media Player -->
-<div class="overlay" id="playerModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3 id="playerTitle">ভিডিও / ছবি</h3>
-      <button class="close-btn" onclick="closePlayer()">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div class="player-wrap" id="playerWrap"></div>
-      <p class="player-note" id="playerNote"></p>
-      <a id="openSourceBtn" class="open-source-btn" target="_blank" style="display:none">🔗 মূল সাইটে দেখুন</a>
-    </div>
-  </div>
-</div>
-
-<!-- Notification -->
-<div class="overlay" id="notifModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3>🔔 নোটিফিকেশন</h3>
-      <button class="close-btn" onclick="closeModal('notifModal')">✕</button>
-    </div>
-    <div class="sheet-body" style="text-align:center;padding:40px 20px">
-      <div style="font-size:50px;margin-bottom:14px">🔔</div>
-      <p style="color:var(--muted);font-size:14px">কোনো নতুন নোটিফিকেশন নেই</p>
-    </div>
-  </div>
+<div class="admin-panel" id="adminPanel">
+    <h4 style="color:#d35400;">➕ মেলা যোগ করুন</h4>
+    <input type="text" id="melaName" placeholder="মেলার নাম">
+    <input type="text" id="melaLocation" placeholder="জেলা, থানা (যেমন: ঢাকা, সাভার)">
+    <input type="date" id="melaStartDate">
+    <input type="date" id="melaEndDate">
+    <textarea id="melaDesc" placeholder="বিবরণ..." rows="2"></textarea>
+    <select id="melaDivision">
+        <option value="">বিভাগ নির্বাচন</option>
+        <option>ঢাকা</option><option>চট্টগ্রাম</option><option>রাজশাহী</option><option>খুলনা</option><option>বরিশাল</option><option>সিলেট</option><option>রংপুর</option><option>ময়মনসিংহ</option>
+    </select>
+    <input type="text" id="melaDistrict" placeholder="জেলা (যেমন: ঢাকা)">
+    <input type="text" id="melaThana" placeholder="থানা/উপজেলা">
+    <button id="addMelaBtn">✅ মেলা সংরক্ষণ করুন</button>
 </div>
 
 <script>
-/* ══ DATA ══ */
-const melaData = [
-  {name:'ঢাকা আন্তর্জাতিক বাণিজ্য মেলা', loc:'শেরে বাংলা নগর, ঢাকা', div:'ঢাকা', dist:'ঢাকা', thana:'শেরে বাংলা নগর', status:'running', days:0},
-  {name:'সিলেট কৃষি ও প্রযুক্তি মেলা', loc:'সিলেট সদর', div:'সিলেট', dist:'সিলেট', thana:'সদর', status:'running', days:0},
-  {name:'চট্টগ্রাম হস্তশিল্প মেলা', loc:'চট্টগ্রাম', div:'চট্টগ্রাম', dist:'চট্টগ্রাম', thana:'কোতোয়ালি', status:'upcoming', days:2},
-  {name:'রাজশাহী বই মেলা ২০২৬', loc:'রাজশাহী শহর', div:'রাজশাহী', dist:'রাজশাহী', thana:'বোয়ালিয়া', status:'upcoming', days:6},
-  {name:'খুলনা বাণিজ্য মেলা', loc:'খুলনা সদর', div:'খুলনা', dist:'খুলনা', thana:'সদর', status:'upcoming', days:8},
-  {name:'বরিশাল শিল্প মেলা', loc:'বরিশাল', div:'বরিশাল', dist:'বরিশাল', thana:'কোতোয়ালি', status:'upcoming', days:9},
-  {name:'রংপুর কৃষি মেলা', loc:'রংপুর সদর', div:'রংপুর', dist:'রংপুর', thana:'সদর', status:'upcoming', days:12},
-  {name:'ময়মনসিংহ লোকজ মেলা', loc:'ময়মনসিংহ', div:'ময়মনসিংহ', dist:'ময়মনসিংহ', thana:'কোতোয়ালি', status:'upcoming', days:15},
-];
+    // Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyDebPmUgXLwnqMFgSk3XLZSScl5gz9EJIw",
+        projectId: "hkar-mela-bd",
+        databaseURL: "https://hkar-mela-bd-default-rtdb.firebaseio.com",
+        storageBucket: "hkar-mela-bd.firebasestorage.app"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const melasRef = database.ref('melas');
 
-const distMap = {
-  'ঢাকা':['ঢাকা','গাজীপুর','নারায়ণগঞ্জ','মানিকগঞ্জ','মুন্সিগঞ্জ','নরসিংদী','ফরিদপুর','কিশোরগঞ্জ','টাঙ্গাইল'],
-  'চট্টগ্রাম':['চট্টগ্রাম','কক্সবাজার','কুমিল্লা','ব্রাহ্মণবাড়িয়া','ফেনী','নোয়াখালী','লক্ষ্মীপুর','চাঁদপুর'],
-  'রাজশাহী':['রাজশাহী','নওগাঁ','নাটোর','বগুড়া','পাবনা','সিরাজগঞ্জ','চাঁপাইনবাবগঞ্জ','জয়পুরহাট'],
-  'খুলনা':['খুলনা','বাগেরহাট','সাতক্ষীরা','যশোর','ঝিনাইদহ','মাগুরা','নড়াইল','কুষ্টিয়া'],
-  'বরিশাল':['বরিশাল','ভোলা','পটুয়াখালী','পিরোজপুর','ঝালকাঠি','বরগুনা'],
-  'সিলেট':['সিলেট','মৌলভীবাজার','হবিগঞ্জ','সুনামগঞ্জ'],
-  'রংপুর':['রংপুর','দিনাজপুর','ঠাকুরগাঁও','পঞ্চগড়','নীলফামারী','কুড়িগ্রাম','লালমনিরহাট','গাইবান্ধা'],
-  'ময়মনসিংহ':['ময়মনসিংহ','জামালপুর','শেরপুর','নেত্রকোণা'],
-};
+    // Image Slider Init
+    const swiper = new Swiper('.mySwiper', {
+        loop: true,
+        autoplay: { delay: 3000 },
+        pagination: { el: '.swiper-pagination', clickable: true },
+    });
 
-const thanaMap = {
-  'ঢাকা':['মিরপুর','মোহাম্মদপুর','গুলশান','বনানী','উত্তরা','ধানমন্ডি','লালবাগ','কোতোয়ালি','রমনা','সবুজবাগ','শেরে বাংলা নগর','কামরাঙ্গীরচর'],
-  'চট্টগ্রাম':['কোতোয়ালি','পাঁচলাইশ','বায়েজিদ','চান্দগাঁও','ডবলমুরিং','হালিশহর','পতেঙ্গা','খুলশী','ষোলশহর'],
-  'রাজশাহী':['বোয়ালিয়া','রাজপাড়া','শাহমখদুম','মতিহার','পবা'],
-  'সিলেট':['সদর','আম্বরখানা','শাহপরান','জালালাবাদ','মোগলাবাজার'],
-};
+    // ---------- VIDEO / IMAGE HANDLER (No full access to YouTube/FB) ----------
+    function extractYouTubeID(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+    function loadMedia() {
+        let url = document.getElementById('mediaUrlInput').value.trim();
+        const container = document.getElementById('mediaContainer');
+        if (!url) {
+            alert('দয়া করে একটি লিংক দিন');
+            return;
+        }
+        // YouTube Embed (Only video, no outer YouTube site)
+        let youTubeID = extractYouTubeID(url);
+        if (youTubeID) {
+            container.innerHTML = `<iframe src="https://www.youtube.com/embed/${youTubeID}?rel=0&modestbranding=1&showinfo=0" frameborder="0" allowfullscreen></iframe>`;
+            return;
+        }
+        // Facebook embed attempt (simple embed, no full fb)
+        if (url.includes('facebook.com') || url.includes('fb.com')) {
+            // Facebook video embed (public videos only, prevents full site access)
+            let fbVideoId = url.split('videos/')[1]?.split('/')[0] || url.split('video.php?id=')[1]?.split('&')[0];
+            if (fbVideoId) {
+                container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/video.php?id=${fbVideoId}&show_text=0&width=100%" width="100%" height="220" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen></iframe>`;
+            } else {
+                container.innerHTML = `<p style="color:red;">ফেসবুক ভিডিও লিংক সাপোর্টেড, তবে এম্বেড কোড প্রয়োজন। সাধারণ লিংক কাজ নাও করতে পারে।</p>`;
+            }
+            return;
+        }
+        // Check if image URL
+        if (url.match(/\.(jpeg|jpg|gif|png|webp)$/i) || url.includes('image')) {
+            container.innerHTML = `<img src="${url}" class="image-preview" alt="ইমেজ">`;
+        } else {
+            container.innerHTML = `<p style="color:red;">শুধু YouTube লিংক, ছবির URL বা ফেসবুক ভিডিও লিংক দিন।</p>`;
+        }
+    }
+    document.getElementById('loadMediaBtn').addEventListener('click', loadMedia);
 
-/* ══ SLIDER ══ */
-let cur = 0, total = 4, autoTimer;
-(function initSlider(){
-  const wrap = document.getElementById('sliderDots');
-  for(let i=0;i<total;i++){
-    const d = document.createElement('div');
-    d.className = 's-dot'+(i===0?' active':'');
-    d.onclick = ()=>go(i);
-    wrap.appendChild(d);
-  }
-  autoTimer = setInterval(()=>changeSlide(1), 4200);
-})();
+    // ---------- GLOBAL MELAS DATA ----------
+    let allMelas = [];
 
-function changeSlide(d){ go((cur+d+total)%total); }
-function go(n){
-  cur = n;
-  document.getElementById('sliderTrack').style.transform = `translateX(-${n*100}%)`;
-  document.querySelectorAll('.s-dot').forEach((d,i)=>d.classList.toggle('active',i===n));
-}
+    // Helper: Date difference in days
+    function daysBetween(date1, date2) {
+        const oneDay = 24 * 60 * 60 * 1000;
+        return Math.round((date2 - date1) / oneDay);
+    }
 
-/* ══ MODALS ══ */
-function openModal(id){ document.getElementById(id).classList.add('on'); document.body.style.overflow='hidden'; }
-function closeModal(id){ document.getElementById(id).classList.remove('on'); document.body.style.overflow=''; }
+    function getMelaStatus(startDate, endDate) {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if (today >= start && today <= end) return 'running';
+        if (today < start) {
+            const daysLeft = daysBetween(today, start);
+            if (daysLeft <= 3) return '3days';
+            if (daysLeft <= 7) return '7days';
+            if (daysLeft <= 10) return '10days';
+            return 'upcoming';
+        }
+        return 'ended';
+    }
 
-document.querySelectorAll('.overlay').forEach(m=>{
-  m.addEventListener('click',function(e){ if(e.target===this){ this.classList.remove('on'); document.body.style.overflow=''; }});
-});
+    function filterMelas(filterType) {
+        if (!allMelas.length) return [];
+        if (filterType === 'all') return allMelas;
+        return allMelas.filter(m => {
+            const status = getMelaStatus(m.startDate, m.endDate);
+            if (filterType === 'running') return status === 'running';
+            if (filterType === '3days') return status === '3days';
+            if (filterType === '7days') return status === '7days';
+            if (filterType === '10days') return status === '10days';
+            return false;
+        });
+    }
 
-/* ══ MELA RESULTS ══ */
-function showResults(f){
-  closeModal('melaSearchModal');
-  let list, title;
-  if(f==='running'){ list=melaData.filter(m=>m.status==='running'); title='🟢 রানিং মেলা'; }
-  else if(f==='three'){ list=melaData.filter(m=>m.days>0&&m.days<=3); title='🔶 তিন দিন বাকি মেলা'; }
-  else if(f==='seven'){ list=melaData.filter(m=>m.days>0&&m.days<=7); title='🔷 সাত দিন বাকি মেলা'; }
-  else if(f==='ten'){ list=melaData.filter(m=>m.days>0&&m.days<=10); title='🔮 দশ দিন বাকি মেলা'; }
-  else{ list=melaData; title='🗂️ সমস্ত মেলা'; }
-  document.getElementById('resultsTitle').textContent=title;
-  renderResults(list);
-  openModal('resultsModal');
-}
+    function renderMelaList(filterType = 'running') {
+        const filtered = filterMelas(filterType);
+        const container = document.getElementById('melaList');
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="text-align:center;">⚠️ কোনো মেলা খুঁজে পাওয়া যায়নি।</p>';
+            return;
+        }
+        let html = '';
+        filtered.forEach(m => {
+            let statusText = '';
+            const st = getMelaStatus(m.startDate, m.endDate);
+            if (st === 'running') statusText = '🏃 চলমান';
+            else if (st === '3days') statusText = '⏳ ৩ দিন বাকি';
+            else if (st === '7days') statusText = '📅 ৭ দিন বাকি';
+            else if (st === '10days') statusText = '📆 ১০ দিন বাকি';
+            else statusText = '📌 অন্যান্য';
+            html += `
+                <div class="mela-item">
+                    <div class="mela-name">🎪 ${m.name}</div>
+                    <div class="mela-details">📍 স্থান: ${m.location} <br> 📅 ${m.startDate} থেকে ${m.endDate}</div>
+                    <div class="mela-details">📝 ${m.desc || ''}</div>
+                    <div class="badge">${statusText}</div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
 
-function renderResults(list){
-  const c=document.getElementById('resultsList');
-  if(!list.length){ c.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted)">😔 কোনো মেলা পাওয়া যায়নি</div>'; return; }
-  c.innerHTML=list.map(m=>`
-    <div class="r-card">
-      <span class="r-badge ${m.status==='running'?'run-b':'up-b'}">${m.status==='running'?'🟢 চলছে':'⏳ '+m.days+' দিন বাকি'}</span>
-      <h4>${m.name}</h4>
-      <div class="r-meta"><span>📍 ${m.loc}</span><span>🏙️ ${m.div} বিভাগ</span></div>
-    </div>`).join('');
-}
+    // Filter buttons active class
+    const btns = document.querySelectorAll('.filter-btn');
+    btns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filterVal = btn.getAttribute('data-filter');
+            renderMelaList(filterVal);
+        });
+    });
 
-/* ══ LOCATION ══ */
-let selDiv='', selDist='';
-function selDiv(d){
-  selDiv=d;
-  show('divGrid','none'); show('distGrid','grid'); show('thanaGrid','none');
-  document.getElementById('distGrid').innerHTML=(distMap[d]||[]).map(x=>`<button class="dist-btn" onclick="selDist('${x}')">${x}</button>`).join('');
-  document.getElementById('locBread').innerHTML=`<span class="bc-item" onclick="resetLoc()">বিভাগ</span><span class="bc-sep">›</span><span class="bc-cur">${d}</span>`;
-}
-function selDist(d){
-  selDist=d;
-  show('distGrid','none'); show('thanaGrid','grid');
-  document.getElementById('thanaGrid').innerHTML=(thanaMap[d]||['সদর','উপজেলা ১','উপজেলা ২','উপজেলা ৩']).map(x=>`<button class="thana-btn" onclick="selThana('${x}')">${x}</button>`).join('');
-  document.getElementById('locBread').innerHTML=`<span class="bc-item" onclick="resetLoc()">বিভাগ</span><span class="bc-sep">›</span><span class="bc-item" onclick="selDiv('${selDiv}')">${selDiv}</span><span class="bc-sep">›</span><span class="bc-cur">${d}</span>`;
-}
-function selThana(t){
-  closeModal('districtModal');
-  const list=melaData.filter(m=>m.div===selDiv||m.dist===selDist);
-  document.getElementById('resultsTitle').textContent=`📍 ${t} থানার মেলা`;
-  renderResults(list.length?list:melaData.slice(0,2));
-  openModal('resultsModal');
-}
-function resetLoc(){
-  show('divGrid','grid'); show('distGrid','none'); show('thanaGrid','none');
-  document.getElementById('locBread').innerHTML='<span class="bc-cur">বিভাগ বেছে নিন</span>';
-}
-function show(id,d){ document.getElementById(id).style.display=d; }
+    // ---------- DISTRICT/THANA SEARCH ----------
+    const divisions = ['ঢাকা', 'চট্টগ্রাম', 'রাজশাহী', 'খুলনা', 'বরিশাল', 'সিলেট', 'রংপুর', 'ময়মনসিংহ'];
+    let selectedDivision = '', selectedDistrict = '', selectedThana = '';
 
-/* ══ ADD MEDIA ══ */
-let curTab='v';
-function switchTab(t){
-  curTab=t;
-  document.getElementById('tabV').classList.toggle('on',t==='v');
-  document.getElementById('tabI').classList.toggle('on',t==='i');
-  document.getElementById('vForm').style.display=t==='v'?'block':'none';
-  document.getElementById('iForm').style.display=t==='i'?'block':'none';
-}
+    function loadDivisions() {
+        const divContainer = document.getElementById('divisionContainer');
+        divContainer.innerHTML = divisions.map(d => `<button class="grid-btn" data-div="${d}">${d}</button>`).join('');
+        document.querySelectorAll('[data-div]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                selectedDivision = btn.getAttribute('data-div');
+                selectedDistrict = '';
+                selectedThana = '';
+                loadDistricts(selectedDivision);
+                document.getElementById('thanaContainer').innerHTML = '';
+                filterByLocation();
+            });
+        });
+    }
 
-function addMedia(){
-  const title=document.getElementById('mTitle').value.trim();
-  const loc=document.getElementById('mLoc').value.trim();
-  if(!title){ alert('শিরোনাম লিখুন'); return; }
+    function loadDistricts(division) {
+        // static demo districts (for prototype, you can expand from DB or hardcode)
+        let districtsMap = {
+            'ঢাকা': ['ঢাকা', 'গাজীপুর', 'নারায়ণগঞ্জ', 'টাঙ্গাইল'],
+            'চট্টগ্রাম': ['চট্টগ্রাম', 'কক্সবাজার', 'কুমিল্লা', 'ফেনী'],
+            'রাজশাহী': ['রাজশাহী', 'নাটোর', 'বগুড়া', 'পাবনা'],
+            'খুলনা': ['খুলনা', 'যশোর', 'সাতক্ষীরা', 'কুষ্টিয়া'],
+            'বরিশাল': ['বরিশাল', 'পটুয়াখালী', 'ভোলা'],
+            'সিলেট': ['সিলেট', 'মৌলভীবাজার', 'হবিগঞ্জ'],
+            'রংপুর': ['রংপুর', 'দিনাজপুর', 'নীলফামারী'],
+            'ময়মনসিংহ': ['ময়মনসিংহ', 'জামালপুর', 'নেত্রকোণা']
+        };
+        let districts = districtsMap[division] || ['জেলা তথ্য নেই'];
+        const districtContainer = document.getElementById('districtContainer');
+        districtContainer.innerHTML = districts.map(d => `<button class="grid-btn" data-district="${d}">${d}</button>`).join('');
+        document.querySelectorAll('[data-district]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                selectedDistrict = btn.getAttribute('data-district');
+                selectedThana = '';
+                loadThanas(selectedDivision, selectedDistrict);
+                filterByLocation();
+            });
+        });
+    }
 
-  if(curTab==='v'){
-    const url=document.getElementById('vUrl').value.trim();
-    if(!url){ alert('ভিডিও লিংক দিন'); return; }
-    const src=document.getElementById('vSource').value;
-    const vidId=extractYtId(url);
-    const thumbUrl = (src==='youtube'&&vidId) ? `https://img.youtube.com/vi/${vidId}/hqdefault.jpg` : '';
-    insertMediaCard('video', src, url, thumbUrl, title, loc, vidId);
-  } else {
-    const imgUrl=document.getElementById('iUrl').value.trim();
-    if(!imgUrl){ alert('ছবির লিংক দিন'); return; }
-    insertMediaCard('image','','',imgUrl,title,loc,'');
-  }
+    function loadThanas(division, district) {
+        // static thana mapping prototype
+        const thanaMap = {
+            'ঢাকা': {'ঢাকা': ['উত্তরা', 'মোহাম্মদপুর', 'ধানমন্ডি', 'মিরপুর'], 'গাজীপুর': ['গাজীপুর সদর', 'টঙ্গি']},
+            'চট্টগ্রাম': {'চট্টগ্রাম': ['কোতোয়ালী', 'পাহাড়তলী', 'চান্দগাঁও']}
+        };
+        let thanas = [];
+        if (thanaMap[division] && thanaMap[division][district]) thanas = thanaMap[division][district];
+        else thanas = ['সাধারণ থানা'];
+        const thanaContainer = document.getElementById('thanaContainer');
+        thanaContainer.innerHTML = thanas.map(t => `<button class="grid-btn" data-thana="${t}">${t}</button>`).join('');
+        document.querySelectorAll('[data-thana]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                selectedThana = btn.getAttribute('data-thana');
+                filterByLocation();
+            });
+        });
+    }
 
-  ['mTitle','mLoc','vUrl','iUrl'].forEach(id=>document.getElementById(id).value='');
-  closeModal('addMediaModal');
-}
+    function filterByLocation() {
+        let filtered = allMelas;
+        if (selectedThana) {
+            filtered = filtered.filter(m => m.thana && m.thana.toLowerCase() === selectedThana.toLowerCase());
+        } else if (selectedDistrict) {
+            filtered = filtered.filter(m => m.district && m.district.toLowerCase() === selectedDistrict.toLowerCase());
+        } else if (selectedDivision) {
+            filtered = filtered.filter(m => m.division && m.division === selectedDivision);
+        }
+        const container = document.getElementById('melaList');
+        if (filtered.length === 0) {
+            container.innerHTML = '<p style="text-align:center;">📍 এই এলাকায় কোনো মেলা নেই।</p>';
+        } else {
+            let html = '';
+            filtered.forEach(m => {
+                html += `<div class="mela-item"><div class="mela-name">🎪 ${m.name}</div><div class="mela-details">📍 ${m.location}<br>📅 ${m.startDate} - ${m.endDate}</div><div class="mela-details">📝 ${m.desc || ''}</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+    }
 
-function extractYtId(url){
-  const m=url.match(/(?:v=|youtu\.be\/)([^&?/\s]{11})/);
-  return m?m[1]:'';
-}
+    // ---------- Load from Firebase ----------
+    function loadMelasFromDB() {
+        melasRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                allMelas = Object.values(data);
+            } else {
+                allMelas = [];
+            }
+            renderMelaList('running'); // default running filter
+        });
+    }
 
-function insertMediaCard(type, src, origUrl, thumbUrl, title, loc, vidId){
-  const grid=document.getElementById('mediaGrid');
-  const card=document.createElement('div');
-  card.className='media-card';
+    // Admin: Add Mela
+    document.getElementById('addMelaBtn').addEventListener('click', () => {
+        const name = document.getElementById('melaName').value;
+        const location = document.getElementById('melaLocation').value;
+        const startDate = document.getElementById('melaStartDate').value;
+        const endDate = document.getElementById('melaEndDate').value;
+        const desc = document.getElementById('melaDesc').value;
+        const division = document.getElementById('melaDivision').value;
+        const district = document.getElementById('melaDistrict').value;
+        const thana = document.getElementById('melaThana').value;
+        if (!name || !startDate || !endDate) {
+            alert('নাম, শুরুর তারিখ ও শেষ তারিখ আবশ্যক');
+            return;
+        }
+        const newMela = {
+            name, location, startDate, endDate, desc,
+            division, district, thana,
+            timestamp: Date.now()
+        };
+        melasRef.push(newMela).then(() => {
+            alert('মেলা সফলভাবে যুক্ত হয়েছে!');
+            document.getElementById('melaName').value = '';
+            document.getElementById('melaLocation').value = '';
+            document.getElementById('melaStartDate').value = '';
+            document.getElementById('melaEndDate').value = '';
+            document.getElementById('melaDesc').value = '';
+            document.getElementById('melaDivision').value = '';
+            document.getElementById('melaDistrict').value = '';
+            document.getElementById('melaThana').value = '';
+        }).catch(err => alert('ত্রুটি: '+err));
+    });
 
-  let badge='', badgeClass='badge-vid', playBtn='', extNote='', onclickAttr='';
+    // Toggle Admin Panel
+    const adminPanel = document.getElementById('adminPanel');
+    const adminToggle = document.getElementById('adminToggleBtn');
+    adminToggle.addEventListener('click', () => {
+        if (adminPanel.style.display === 'none' || adminPanel.style.display === '') {
+            adminPanel.style.display = 'block';
+        } else {
+            adminPanel.style.display = 'none';
+        }
+    });
 
-  if(type==='image'){
-    badgeClass='badge-img'; badge='ছবি';
-    onclickAttr=`playMedia('img','','${esc(title)}','${esc(thumbUrl)}')`;
-  } else if(src==='youtube'){
-    badgeClass='badge-yt'; badge='YouTube'; playBtn='<div class="play-btn">▶</div>';
-    extNote='<span class="ext-link-note">▶ ক্লিক করে ভিডিও দেখুন</span>';
-    onclickAttr=`playMedia('yt','${esc(vidId)}','${esc(title)}','${esc(origUrl)}')`;
-  } else if(src==='facebook'){
-    badgeClass='badge-fb'; badge='Facebook'; playBtn='<div class="play-btn">▶</div>';
-    extNote='<span class="ext-link-note">▶ ক্লিক করে ভিডিও দেখুন</span>';
-    onclickAttr=`playMedia('fb','','${esc(title)}','${esc(origUrl)}')`;
-  } else {
-    badge='ভিডিও'; playBtn='<div class="play-btn">▶</div>';
-    extNote='<span class="ext-link-note">▶ ক্লিক করে ভিডিও দেখুন</span>';
-    onclickAttr=`playMedia('other','','${esc(title)}','${esc(origUrl)}')`;
-  }
+    // Initial Load
+    loadDivisions();
+    loadMelasFromDB();
 
-  const thumbHtml = thumbUrl
-    ? `<img src="${thumbUrl}" alt="${title}" onerror="this.parentNode.innerHTML='<div class=thumb-placeholder><span class=big-icon>🎬</span><span>ভিডিও</span></div>'">`
-    : `<div class="thumb-placeholder"><span class="big-icon">${type==='image'?'🖼️':'🎬'}</span><span>${badge}</span></div>`;
-
-  card.setAttribute('onclick', onclickAttr);
-  card.innerHTML=`
-    <div class="thumb">${thumbHtml}${playBtn}<div class="media-badge ${badgeClass}">${badge}</div></div>
-    <div class="media-info">
-      <h4>${title}</h4>
-      <div class="media-meta">${loc?`<span>📍 ${loc}</span>`:''}<span>🕐 এইমাত্র</span></div>
-      ${extNote}
-    </div>`;
-  grid.insertBefore(card, grid.firstChild);
-}
-
-function esc(s){ return (s||'').replace(/'/g,"\\'"); }
-
-/* ══ MEDIA PLAYER ══ */
-function playMedia(type, vidId, title, url){
-  document.getElementById('playerTitle').textContent = title;
-  const wrap = document.getElementById('playerWrap');
-  const note = document.getElementById('playerNote');
-  const openBtn = document.getElementById('openSourceBtn');
-  wrap.innerHTML='';
-  note.textContent='';
-  openBtn.style.display='none';
-
-  if(type==='img'){
-    wrap.innerHTML=`<img src="${url}" alt="${title}" style="border-radius:0">`;
-  } else if(type==='yt'){
-    // Show YouTube thumbnail, open YouTube on tap
-    wrap.innerHTML=`
-      <div style="position:relative;cursor:pointer" onclick="window.open('${url}','_blank')">
-        <img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" alt="${title}" style="width:100%;height:215px;object-fit:cover;display:block;border-radius:0">
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;box-shadow:0 3px 16px rgba(0,0,0,0.5)">▶</div>
-      </div>`;
-    note.textContent = '🔒 শুধু এই ভিডিওটি দেখা যাবে — YouTube-এ অন্য কিছু ছাড়াই';
-    openBtn.href = url;
-    openBtn.textContent = '▶ YouTube-এ দেখুন';
-    openBtn.style.display = 'block';
-  } else {
-    wrap.innerHTML=`<div style="height:215px;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff"><span style="font-size:48px">🎬</span><span style="font-size:13px;opacity:.8">${title}</span></div>`;
-    openBtn.href = url;
-    openBtn.textContent = '▶ ভিডিও দেখুন (মূল সাইটে)';
-    openBtn.style.display = 'block';
-  }
-
-  openModal('playerModal');
-}
-
-function closePlayer(){
-  document.getElementById('playerWrap').innerHTML='';
-  closeModal('playerModal');
-}
+    // set default active filter running
+    renderMelaList('running');
 </script>
 </body>
 </html>
