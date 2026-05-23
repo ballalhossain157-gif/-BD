@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>হকার মেলা BD - এডমিন প্যানেল</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .back-btn {
+            background: white;
+            color: #d35400;
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .admin-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .admin-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 15px;
+            border-left: 5px solid #e67e22;
+            padding-left: 12px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        .btn {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .btn-danger {
+            background: #e74c3c;
+        }
+        .btn-warning {
+            background: #f39c12;
+        }
+        .mela-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f39c12;
+            color: white;
+        }
+        .action-buttons button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .edit-form {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            display: none;
+        }
+        .edit-form.active {
+            display: block;
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🔐 এডমিন প্যানেল - হকার মেলা BD</h1>
+        <a href="user-panel.html" class="back-btn" target="_blank">🏠 ইউজার প্যানেল দেখুন</a>
+    </div>
+
+    <!-- Add Mela Form -->
+    <div class="admin-card">
+        <div class="admin-title">➕ নতুন মেলা যোগ করুন</div>
+        <div class="form-group">
+            <label>মেলার নাম *</label>
+            <input type="text" id="melaName" placeholder="যেমন: বৈশাখী মেলা">
+        </div>
+        <div class="form-group">
+            <label>স্থান (জেলা, থানা) *</label>
+            <input type="text" id="melaLocation" placeholder="যেমন: ঢাকা, সাভার">
+        </div>
+        <div class="form-group">
+            <label>শুরুর তারিখ *</label>
+            <input type="date" id="melaStartDate">
+        </div>
+        <div class="form-group">
+            <label>শেষের তারিখ *</label>
+            <input type="date" id="melaEndDate">
+        </div>
+        <div class="form-group">
+            <label>বিবরণ</label>
+            <textarea id="melaDesc" rows="3" placeholder="মেলা সম্পর্কে বিস্তারিত..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>বিভাগ</label>
+            <select id="melaDivision">
+                <option value="">বিভাগ নির্বাচন করুন</option>
+                <option>ঢাকা</option><option>চট্টগ্রাম</option><option>রাজশাহী</option>
+                <option>খুলনা</option><option>বরিশাল</option><option>সিলেট</option>
+                <option>রংপুর</option><option>ময়মনসিংহ</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>জেলা</label>
+            <input type="text" id="melaDistrict" placeholder="যেমন: ঢাকা">
+        </div>
+        <div class="form-group">
+            <label>থানা/উপজেলা</label>
+            <input type="text" id="melaThana" placeholder="যেমন: সাভার">
+        </div>
+        <button class="btn" id="addMelaBtn">✅ মেলা সংরক্ষণ করুন</button>
+    </div>
+
+    <!-- Manage Melas -->
+    <div class="admin-card">
+        <div class="admin-title">📋 সকল মেলার তালিকা (এডিট/ডিলিট)</div>
+        <div class="search-box">
+            <input type="text" id="searchMela" placeholder="🔍 মেলার নাম অনুসন্ধান করুন...">
+        </div>
+        <div class="mela-table" id="melaTableContainer">
+            <p>লোড হচ্ছে...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Firebase Config
+    const firebaseConfig = {
+        apiKey: "AIzaSyDebPmUgXLwnqMFgSk3XLZSScl5gz9EJIw",
+        projectId: "hkar-mela-bd",
+        databaseURL: "https://hkar-mela-bd-default-rtdb.firebaseio.com",
+        storageBucket: "hkar-mela-bd.firebasestorage.app"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const melasRef = database.ref('melas');
+
+    let allMelas = [];
+
+    // Load melas from Firebase
+    function loadMelas() {
+        melasRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                allMelas = Object.keys(data).map(key => ({ ...data[key], id: key }));
+            } else {
+                allMelas = [];
+            }
+            displayMelas(allMelas);
+        });
+    }
+
+    // Display melas in table
+    function displayMelas(melas) {
+        const container = document.getElementById('melaTableContainer');
+        if (melas.length === 0) {
+            container.innerHTML = '<p style="text-align:center;">কোনো মেলা পাওয়া যায়নি।</p>';
+            return;
+        }
+        
+        let html = '<table><thead><tr><th>নাম</th><th>স্থান</th><th>শুরু</th><th>শেষ</th><th>বিভাগ</th><th>জেলা</th><th>থানা</th><th>অ্যাকশন</th></tr></thead><tbody>';
+        
+        melas.forEach(mela => {
+            html += `
+                <tr>
+                    <td>${mela.name || ''}</td>
+                    <td>${mela.location || ''}</td>
+                    <td>${mela.startDate || ''}</td>
+                    <td>${mela.endDate || ''}</td>
+                    <td>${mela.division || ''}</td>
+                    <td>${mela.district || ''}</td>
+                    <td>${mela.thana || ''}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-warning" onclick="showEditForm('${mela.id}')">✏️ এডিট</button>
+                        <button class="btn btn-danger" onclick="deleteMela('${mela.id}')">🗑️ ডিলিট</button>
+                    </td>
+                </tr>
+                <tr id="edit-row-${mela.id}" style="display:none;">
+                    <td colspan="8">
+                        <div class="edit-form active" id="edit-form-${mela.id}">
+                            <h4>${mela.name} - এডিট করুন</h4>
+                            <input type="text" id="edit-name-${mela.id}" value="${mela.name || ''}" placeholder="মেলার নাম">
+                            <input type="text" id="edit-location-${mela.id}" value="${mela.location || ''}" placeholder="স্থান">
+                            <input type="date" id="edit-start-${mela.id}" value="${mela.startDate || ''}">
+                            <input type="date" id="edit-end-${mela.id}" value="${mela.endDate || ''}">
+                            <textarea id="edit-desc-${mela.id}" placeholder="বিবরণ">${mela.desc || ''}</textarea>
+                            <select id="edit-division-${mela.id}">
+                                <option value="">বিভাগ</option>
+                                <option ${mela.division === 'ঢাকা' ? 'selected' : ''}>ঢাকা</option>
+                                <option ${mela.division === 'চট্টগ্রাম' ? 'selected' : ''}>চট্টগ্রাম</option>
+                                <option ${mela.division === 'রাজশাহী' ? 'selected' : ''}>রাজশাহী</option>
+                                <option ${mela.division === 'খুলনা' ? 'selected' : ''}>খুলনা</option>
+                                <option ${mela.division === 'বরিশাল' ? 'selected' : ''}>বরিশাল</option>
+                                <option ${mela.division === 'সিলেট' ? 'selected' : ''}>সিলেট</option>
+                                <option ${mela.division === 'রংপুর' ? 'selected' : ''}>রংপুর</option>
+                                <option ${mela.division === 'ময়মনসিংহ' ? 'selected' : ''}>ময়মনসিংহ</option>
+                            </select>
+                            <input type="text" id="edit-district-${mela.id}" value="${mela.district || ''}" placeholder="জেলা">
+                            <input type="text" id="edit-thana-${mela.id}" value="${mela.thana || ''}" placeholder="থানা">
+                            <button class="btn" onclick="updateMela('${mela.id}')">আপডেট করুন</button>
+                            <button class="btn" onclick="hideEditForm('${mela.id}')">বাতিল করুন</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+
+    // Show edit form
+    window.showEditForm = function(id) {
+        const row = document.getElementById(`edit-row-${id}`);
+        if (row.style.display === 'none' || row.style.display === '') {
+            row.style.display = 'table-row';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+    
+    window.hideEditForm = function(id) {
+        document.getElementById(`edit-row-${id}`).style.display = 'none';
+    }
+
+    // Update mela
+    window.updateMela = function(id) {
+        const updatedData = {
+            name: document.getElementById(`edit-name-${id}`).value,
+            location: document.getElementById(`edit-location-${id}`).value,
+            startDate: document.getElementById(`edit-start-${id}`).value,
+            endDate: document.getElementById(`edit-end-${id}`).value,
+            desc: document.getElementById(`edit-desc-${id}`).value,
+            division: document.getElementById(`edit-division-${id}`).value,
+            district: document.getElementById(`edit-district-${id}`).value,
+            thana: document.getElementById(`edit-thana-${id}`).value
+        };
+        
+        melasRef.child(id).update(updatedData).then(() => {
+            alert('মেলা আপডেট হয়েছে!');
+            hideEditForm(id);
+        }).catch(err => alert('ত্রুটি: ' + err));
+    }
+
+    // Delete mela
+    window.deleteMela = function(id) {
+        if (confirm('আপনি কি এই মেলা ডিলিট করতে চান?')) {
+            melasRef.child(id).remove().then(() => {
+                alert('মেলা ডিলিট হয়েছে!');
+            }).catch(err => alert('ত্রুটি: ' + err));
+        }
+    }
+
+    // Add new mela
+    document.getElementById('addMelaBtn').addEventListener('click', () => {
+        const name = document.getElementById('melaName').value;
+        const location = document.getElementById('melaLocation').value;
+        const startDate = document.getElementById('melaStartDate').value;
+        const endDate = document.getElementById('melaEndDate').value;
+        const desc = document.getElementById('melaDesc').value;
+        const division = document.getElementById('melaDivision').value;
+        const district = document.getElementById('melaDistrict').value;
+        const thana = document.getElementById('melaThana').value;
+        
+        if (!name || !startDate || !endDate) {
+            alert('নাম, শুরুর তারিখ ও শেষের তারিখ আবশ্যক!');
+            return;
+        }
+        
+        const newMela = { name, location, startDate, endDate, desc, division, district, thana };
+        melasRef.push(newMela).then(() => {
+            alert('মেলা সফলভাবে যোগ হয়েছে!');
+            // Clear form
+            document.getElementById('melaName').value = '';
+            document.getElementById('melaLocation').value = '';
+            document.getElementById('melaStartDate').value = '';
+            document.getElementById('melaEndDate').value = '';
+            document.getElementById('melaDesc').value = '';
+            document.getElementById('melaDivision').value = '';
+            document.getElementById('melaDistrict').value = '';
+            document.getElementById('melaThana').value = '';
+        }).catch(err => alert('ত্রুটি: ' + err));
+    });
+
+    // Search functionality
+    document.getElementById('searchMela').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = allMelas.filter(m => m.name && m.name.toLowerCase().includes(searchTerm));
+        displayMelas(filtered);
+    });
+
+    // Load all melas on page load
+    loadMelas();
+</script>
+</body>
+</html>
