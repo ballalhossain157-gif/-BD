@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>হকার মেলা BD</title>
+    <title>হকার মেলা BD - ইউজার প্যানেল</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
@@ -17,13 +17,10 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             background: #f5f5f5;
-            padding-bottom: 70px;
+            padding-bottom: 20px;
         }
-
-        /* Header */
         .header {
             background: linear-gradient(135deg, #e67e22, #d35400);
             color: white;
@@ -36,8 +33,6 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
-
-        /* Swiper Slider */
         .swiper {
             width: 100%;
             height: 200px;
@@ -49,8 +44,6 @@
             object-fit: cover;
             border-radius: 12px;
         }
-
-        /* Video Section */
         .section-card {
             background: white;
             margin: 15px;
@@ -104,8 +97,6 @@
         .image-preview {
             object-fit: cover;
         }
-
-        /* Buttons Row */
         .button-row {
             display: flex;
             flex-wrap: wrap;
@@ -128,8 +119,6 @@
             background: #e67e22;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-
-        /* District/Thana Grid */
         .grid-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -143,9 +132,8 @@
             border-radius: 30px;
             cursor: pointer;
             font-size: 14px;
+            border: none;
         }
-
-        /* Mela List */
         .mela-list {
             margin: 15px;
         }
@@ -155,7 +143,6 @@
             padding: 15px;
             margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: 0.2s;
         }
         .mela-name {
             font-size: 18px;
@@ -176,51 +163,25 @@
             font-size: 12px;
             margin-top: 8px;
         }
-
-        /* Admin Panel Toggle */
-        .admin-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #d35400;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 10px 18px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 200;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        .admin-link {
+            text-align: center;
+            margin: 15px;
         }
-        .admin-panel {
-            display: none;
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 90%;
-            max-width: 350px;
+        .admin-link a {
+            color: #d35400;
+            text-decoration: none;
+            font-weight: bold;
             background: white;
-            border-radius: 20px;
-            padding: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            z-index: 200;
-        }
-        .admin-panel input, .admin-panel select, .admin-panel textarea {
-            width: 100%;
-            margin: 6px 0;
-            padding: 8px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-        }
-        .admin-panel button {
-            background: #e67e22;
-            color: white;
-            border: none;
-            padding: 8px;
+            padding: 8px 20px;
             border-radius: 30px;
-            width: 100%;
-            margin-top: 8px;
-            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -242,7 +203,7 @@
 
 <!-- Video / Media Section -->
 <div class="section-card">
-    <div class="section-title">🎬 ভিডিও / ইমজি গ্যালারি</div>
+    <div class="section-title">🎬 ভিডিও / ইমেজ গ্যালারি</div>
     <div class="video-input-group">
         <input type="text" id="mediaUrlInput" placeholder="YouTube/FB লিংক অথবা ছবির URL">
         <button id="loadMediaBtn">দেখুন</button>
@@ -253,7 +214,7 @@
     <p style="font-size:12px; color:#777; margin-top:8px;">ⓘ ইউটিউব লিংক দিলে শুধু ভিডিও দেখাবে, বাইরে যাবে না। ছবির URL দিলে ছবি দেখাবে।</p>
 </div>
 
-<!-- মেলা খুজুন বাটন রো -->
+<!-- মেলা খুঁজুন বাটন রো -->
 <div class="button-row" id="filterButtons">
     <button data-filter="running" class="filter-btn active">🏃 রানিং মেলা</button>
     <button data-filter="3days" class="filter-btn">⏳ তিন দিন বাকি</button>
@@ -262,12 +223,10 @@
     <button data-filter="all" class="filter-btn">🗺️ সমস্ত মেলা</button>
 </div>
 
-<!-- জেলা ও থানা অনুযায়ী মেলা খুজুন -->
+<!-- জেলা ও থানা অনুযায়ী মেলা খুঁজুন -->
 <div class="section-card">
     <div class="section-title">📍 জেলা ও থানা অনুযায়ী খুঁজুন</div>
-    <div id="divisionContainer" class="grid-buttons">
-        <!-- divisions dynamically -->
-    </div>
+    <div id="divisionContainer" class="grid-buttons"></div>
     <div id="districtContainer" class="grid-buttons"></div>
     <div id="thanaContainer" class="grid-buttons"></div>
 </div>
@@ -277,24 +236,13 @@
     <p style="text-align:center;">মেলার তথ্য লোড হচ্ছে...</p>
 </div>
 
-<!-- Admin Toggle Button -->
-<button class="admin-toggle" id="adminToggleBtn">🔐 অ্যাডমিন প্যানেল</button>
-
-<div class="admin-panel" id="adminPanel">
-    <h4 style="color:#d35400;">➕ মেলা যোগ করুন</h4>
-    <input type="text" id="melaName" placeholder="মেলার নাম">
-    <input type="text" id="melaLocation" placeholder="জেলা, থানা (যেমন: ঢাকা, সাভার)">
-    <input type="date" id="melaStartDate">
-    <input type="date" id="melaEndDate">
-    <textarea id="melaDesc" placeholder="বিবরণ..." rows="2"></textarea>
-    <select id="melaDivision">
-        <option value="">বিভাগ নির্বাচন</option>
-        <option>ঢাকা</option><option>চট্টগ্রাম</option><option>রাজশাহী</option><option>খুলনা</option><option>বরিশাল</option><option>সিলেট</option><option>রংপুর</option><option>ময়মনসিংহ</option>
-    </select>
-    <input type="text" id="melaDistrict" placeholder="জেলা (যেমন: ঢাকা)">
-    <input type="text" id="melaThana" placeholder="থানা/উপজেলা">
-    <button id="addMelaBtn">✅ মেলা সংরক্ষণ করুন</button>
+<div class="admin-link">
+    <a href="admin-panel.html" target="_blank">🔐 অ্যাডমিন প্যানেল (প্রশাসকদের জন্য)</a>
 </div>
+
+<footer>
+    © হকার মেলা BD - বাংলাদেশের সকল মেলার তথ্য
+</footer>
 
 <script>
     // Firebase Config
@@ -315,12 +263,13 @@
         pagination: { el: '.swiper-pagination', clickable: true },
     });
 
-    // ---------- VIDEO / IMAGE HANDLER (No full access to YouTube/FB) ----------
+    // Video/Image Handler
     function extractYouTubeID(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
         return (match && match[2].length === 11) ? match[2] : null;
     }
+    
     function loadMedia() {
         let url = document.getElementById('mediaUrlInput').value.trim();
         const container = document.getElementById('mediaContainer');
@@ -328,20 +277,19 @@
             alert('দয়া করে একটি লিংক দিন');
             return;
         }
-        // YouTube Embed (Only video, no outer YouTube site)
+        // YouTube Embed
         let youTubeID = extractYouTubeID(url);
         if (youTubeID) {
             container.innerHTML = `<iframe src="https://www.youtube.com/embed/${youTubeID}?rel=0&modestbranding=1&showinfo=0" frameborder="0" allowfullscreen></iframe>`;
             return;
         }
-        // Facebook embed attempt (simple embed, no full fb)
+        // Facebook embed
         if (url.includes('facebook.com') || url.includes('fb.com')) {
-            // Facebook video embed (public videos only, prevents full site access)
             let fbVideoId = url.split('videos/')[1]?.split('/')[0] || url.split('video.php?id=')[1]?.split('&')[0];
             if (fbVideoId) {
                 container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/video.php?id=${fbVideoId}&show_text=0&width=100%" width="100%" height="220" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen></iframe>`;
             } else {
-                container.innerHTML = `<p style="color:red;">ফেসবুক ভিডিও লিংক সাপোর্টেড, তবে এম্বেড কোড প্রয়োজন। সাধারণ লিংক কাজ নাও করতে পারে।</p>`;
+                container.innerHTML = `<p style="color:red;">ফেসবুক ভিডিও লিংক সাপোর্টেড, তবে সঠিক লিংক দিন।</p>`;
             }
             return;
         }
@@ -354,10 +302,9 @@
     }
     document.getElementById('loadMediaBtn').addEventListener('click', loadMedia);
 
-    // ---------- GLOBAL MELAS DATA ----------
+    // Global melas data
     let allMelas = [];
 
-    // Helper: Date difference in days
     function daysBetween(date1, date2) {
         const oneDay = 24 * 60 * 60 * 1000;
         return Math.round((date2 - date1) / oneDay);
@@ -411,7 +358,7 @@
             html += `
                 <div class="mela-item">
                     <div class="mela-name">🎪 ${m.name}</div>
-                    <div class="mela-details">📍 স্থান: ${m.location} <br> 📅 ${m.startDate} থেকে ${m.endDate}</div>
+                    <div class="mela-details">📍 স্থান: ${m.location || m.district || ''} <br> 📅 ${m.startDate} থেকে ${m.endDate}</div>
                     <div class="mela-details">📝 ${m.desc || ''}</div>
                     <div class="badge">${statusText}</div>
                 </div>
@@ -420,7 +367,7 @@
         container.innerHTML = html;
     }
 
-    // Filter buttons active class
+    // Filter buttons
     const btns = document.querySelectorAll('.filter-btn');
     btns.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -431,7 +378,7 @@
         });
     });
 
-    // ---------- DISTRICT/THANA SEARCH ----------
+    // District/Thana Search
     const divisions = ['ঢাকা', 'চট্টগ্রাম', 'রাজশাহী', 'খুলনা', 'বরিশাল', 'সিলেট', 'রংপুর', 'ময়মনসিংহ'];
     let selectedDivision = '', selectedDistrict = '', selectedThana = '';
 
@@ -451,8 +398,7 @@
     }
 
     function loadDistricts(division) {
-        // static demo districts (for prototype, you can expand from DB or hardcode)
-        let districtsMap = {
+        const districtsMap = {
             'ঢাকা': ['ঢাকা', 'গাজীপুর', 'নারায়ণগঞ্জ', 'টাঙ্গাইল'],
             'চট্টগ্রাম': ['চট্টগ্রাম', 'কক্সবাজার', 'কুমিল্লা', 'ফেনী'],
             'রাজশাহী': ['রাজশাহী', 'নাটোর', 'বগুড়া', 'পাবনা'],
@@ -476,7 +422,6 @@
     }
 
     function loadThanas(division, district) {
-        // static thana mapping prototype
         const thanaMap = {
             'ঢাকা': {'ঢাকা': ['উত্তরা', 'মোহাম্মদপুর', 'ধানমন্ডি', 'মিরপুর'], 'গাজীপুর': ['গাজীপুর সদর', 'টঙ্গি']},
             'চট্টগ্রাম': {'চট্টগ্রাম': ['কোতোয়ালী', 'পাহাড়তলী', 'চান্দগাঁও']}
@@ -509,74 +454,27 @@
         } else {
             let html = '';
             filtered.forEach(m => {
-                html += `<div class="mela-item"><div class="mela-name">🎪 ${m.name}</div><div class="mela-details">📍 ${m.location}<br>📅 ${m.startDate} - ${m.endDate}</div><div class="mela-details">📝 ${m.desc || ''}</div></div>`;
+                html += `<div class="mela-item"><div class="mela-name">🎪 ${m.name}</div><div class="mela-details">📍 ${m.location || m.district || ''}<br>📅 ${m.startDate} - ${m.endDate}</div><div class="mela-details">📝 ${m.desc || ''}</div></div>`;
             });
             container.innerHTML = html;
         }
     }
 
-    // ---------- Load from Firebase ----------
+    // Load from Firebase
     function loadMelasFromDB() {
         melasRef.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                allMelas = Object.values(data);
+                allMelas = Object.keys(data).map(key => ({ ...data[key], id: key }));
             } else {
                 allMelas = [];
             }
-            renderMelaList('running'); // default running filter
+            renderMelaList('running');
         });
     }
 
-    // Admin: Add Mela
-    document.getElementById('addMelaBtn').addEventListener('click', () => {
-        const name = document.getElementById('melaName').value;
-        const location = document.getElementById('melaLocation').value;
-        const startDate = document.getElementById('melaStartDate').value;
-        const endDate = document.getElementById('melaEndDate').value;
-        const desc = document.getElementById('melaDesc').value;
-        const division = document.getElementById('melaDivision').value;
-        const district = document.getElementById('melaDistrict').value;
-        const thana = document.getElementById('melaThana').value;
-        if (!name || !startDate || !endDate) {
-            alert('নাম, শুরুর তারিখ ও শেষ তারিখ আবশ্যক');
-            return;
-        }
-        const newMela = {
-            name, location, startDate, endDate, desc,
-            division, district, thana,
-            timestamp: Date.now()
-        };
-        melasRef.push(newMela).then(() => {
-            alert('মেলা সফলভাবে যুক্ত হয়েছে!');
-            document.getElementById('melaName').value = '';
-            document.getElementById('melaLocation').value = '';
-            document.getElementById('melaStartDate').value = '';
-            document.getElementById('melaEndDate').value = '';
-            document.getElementById('melaDesc').value = '';
-            document.getElementById('melaDivision').value = '';
-            document.getElementById('melaDistrict').value = '';
-            document.getElementById('melaThana').value = '';
-        }).catch(err => alert('ত্রুটি: '+err));
-    });
-
-    // Toggle Admin Panel
-    const adminPanel = document.getElementById('adminPanel');
-    const adminToggle = document.getElementById('adminToggleBtn');
-    adminToggle.addEventListener('click', () => {
-        if (adminPanel.style.display === 'none' || adminPanel.style.display === '') {
-            adminPanel.style.display = 'block';
-        } else {
-            adminPanel.style.display = 'none';
-        }
-    });
-
-    // Initial Load
     loadDivisions();
     loadMelasFromDB();
-
-    // set default active filter running
-    renderMelaList('running');
 </script>
 </body>
 </html>
